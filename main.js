@@ -30,15 +30,18 @@ function createWindow() {
 
 const createWindow2 = () => {
   const newWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-          preload: path.join(__dirname, 'preloadExternal.js'),
-      },
-      
+    width: 800,
+    height: 600,
+    webPreferences: {
+      // preload: path.join(__dirname, 'preloadExternal.js'),
+      preload: path.join(__dirname, 'preloadExternal.js'),
+    },
+    
   });
-
-  newWindow.loadFile('secondWindow.html');
+  
+  newWindow.loadURL('http://localhost:8080')
+  // newWindow.loadFile('secondWindow.html');
+  newWindow.webContents.openDevTools()
 }
 
 /*

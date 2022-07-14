@@ -5,44 +5,17 @@ const {BrowserWindow} = require('electron');
  * It has the same sandbox as a Chrome extension.
  */
 window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector);
-    if (element) {
- element.innerText = text;
-}
-  };
-
-  for (const type of [
-'chrome',
-'node',
-'electron'
-]) {
-    replaceText(`${type}-version`, process.versions[type]);
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  var code = 'alert("hello world!");';
+  try {
+    s.appendChild(document.createTextNode(code));
+    document.body.appendChild(s);
+  } catch (e) {
+    s.text = code;
+    document.body.appendChild(s);
   }
 
+
 // In the main process.
-
-const {fork} = require('child_process');
-fork(path.join(__dirname, 'child.js'), ['args'], {
-'stdio': 'pipe'
-});
-
-  require('electron').shell.openExternal('http://google.com');
-
-/*
- * Const win = new BrowserWindow({'width': 800,
- * 'height': 600});
- */
-
-/*
- * Load a remote URL
- * win.loadURL('https://github.com');
- */
-
-/*
- * Or load a local HTML file
- * win.loadFile('index.html');
- */
-
-
 });
