@@ -31,16 +31,19 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type]);
   }
 
-  // const myProcessID = document.createElement('p');
-  // myProcessID.innerHTML = typeof mySpawnProcess;
-  // document.body.appendChild(myProcessID);
-  const button = document.createElement('button')
-  // button.addEventListener('click', CreateWindow2)
-  button.addEventListener('click', () => {
-    ipcRenderer.send('asynchronous-message', 'ping')
+ const makeWindowButton = document.createElement('button')
+ makeWindowButton.addEventListener('click', () => {
+    ipcRenderer.send('openNewWindow', 'ping')
 })
-  button.innerHTML = "OPEN NEW WINDOW PLZ"
-  document.body.appendChild(button);
+  makeWindowButton.innerHTML = "OPEN NEW WINDOW PLZ"
+  document.body.appendChild(makeWindowButton);
+
+ const alterWindowButton = document.createElement('button')
+ alterWindowButton.addEventListener('click', () => {
+    ipcRenderer.send('alterExistingWindow', 'ping')
+})
+alterWindowButton.innerHTML = "Alter Existing Window"
+  document.body.appendChild(alterWindowButton);
 
   // In the main process.
 

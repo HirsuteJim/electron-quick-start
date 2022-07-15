@@ -2,12 +2,28 @@
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
 
+let newWindow;
 //ipc
 const { ipcMain } = require('electron')
-ipcMain.on('asynchronous-message', (event, arg) => {
+ipcMain.on('openNewWindow', (event, arg) => {
   createWindow2();
 })
+ipcMain.on('alterExistingWindow', (event, arg) => {
+  newFunc(newWindow);
+})
+ipcMain.on('Sending message', (event, arg) => {
+  console.log('🔴🟠🟡🟢🔵🟣 | file: main.js | line 15 | ipcMain.on | arg', arg);
+  console.log('🔴🟠🟡🟢🔵🟣 | file: main.js | line 15 | ipcMain.on | event', event);
+  console.log('Message Recieved!');
+})
 
+
+
+/*
+* ==================================================
+*   Create the primary App (electron) window
+* ==================================================
+*/
 
 function createWindow() {
   // Create the browser window.
@@ -15,35 +31,97 @@ function createWindow() {
     'width': 800,
     'height': 600,
     'webPreferences': {
-      'preload': path.join(__dirname, 'preload.js')
+      'preload': path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
+      experimentalFeatures: true,
+      allowRunningInsecureContent: true,
+      webSecurity: false,
+      nodeIntegrationInSubFrames: true,
+      nodeIntegrationInWorker: true,
     }
   });
-
+  
   // And load the index.html of the app.
   mainWindow.loadFile('index.html');
-
+  
   /*
-   * Open the DevTools.
+  * Open the DevTools.
   */
  mainWindow.webContents.openDevTools()
 }
 
+
+/*
+* ==================================================
+*   Create the second window
+* ==================================================
+*/
+
 const createWindow2 = () => {
-  const newWindow = new BrowserWindow({
+  newWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       // preload: path.join(__dirname, 'preloadExternal.js'),
       preload: path.join(__dirname, 'preloadExternal.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
+      experimentalFeatures: true,
+      allowRunningInsecureContent: true,
+      webSecurity: false,
+      nodeIntegrationInSubFrames: true,
+      nodeIntegrationInWorker: true,
     },
+
+
     
   });
   
-  newWindow.loadURL('http://localhost:8080')
+  // newWindow.loadURL('http://localhost:8080')
+  newWindow.webContents.loadURL('http://localhost:8080')
+
+  // setTimeout(() => {
+  //   newWindow.onload = function () {
+  //     // const myReturnButton = this.document.body.createElement('button');
+  //     const myReturnButton = this.document.createElement('button');
+  //     myReturnButton.innerHTML = 'Go Back!!';
+  //     myReturnButton.addEventListener('click',() => {
+  //       ipcRenderer.send('Sending message', 'ping')
+  //     })
+  //     this.document.body.appendChild(myReturnButton);
+  //   }
+  // }, 5000)
+
   // newWindow.loadFile('secondWindow.html');
   newWindow.webContents.openDevTools()
 }
 
+const newFunc = (window) => {
+  const script = `
+  const { ipcRenderer } = require('electron');
+
+  const btn = document.createElement('button');
+  btn.innerHTML = 'ADDED BTN';
+  btn.addEventListener('click', () => {
+    ipcRenderer.send('Sending message', 'ping')
+  })
+  document.body.appendChild(btn);
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  var code = 'alert("hello world!");';
+  try {
+    s.appendChild(document.createTextNode(code));
+    document.body.appendChild(s);
+  } catch (e) {
+    s.text = code;
+    document.body.appendChild(s);
+  }
+  `;
+  window.webContents.executeJavaScript(script);
+
+
+}
 /*
  * This method will be called when Electron has finished
  * initialization and is ready to create browser windows.
