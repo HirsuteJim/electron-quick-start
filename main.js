@@ -64,7 +64,7 @@ const createWindow2 = () => {
     height: 600,
     webPreferences: {
       // preload: path.join(__dirname, 'preloadExternal.js'),
-      preload: path.join(__dirname, 'preloadExternal.js'),
+      // preload: path.join(__dirname, 'preloadExternal.js'),
       nodeIntegration: true,
       contextIsolation: false,
       experimentalFeatures: true,
@@ -77,7 +77,7 @@ const createWindow2 = () => {
 
   // newWindow.loadURL('http://localhost:8080')
 
-  injectScript(newWindow);
+  // injectScript(newWindow);
 
   // setTimeout(() => {
   //   newWindow.onload = function () {
@@ -90,11 +90,10 @@ const createWindow2 = () => {
   //     this.document.body.appendChild(myReturnButton);
   //   }
   // }, 5000)
-  newWindow.loadFile('secondWindow.html');
+  // newWindow.loadFile('secondWindow.html');
 
-  setTimeout(() => {
-    newWindow.webContents.loadURL('http://localhost:8080');
-  }, 10000);
+  newWindow.webContents.loadURL('http://localhost:8080');
+
 
   newWindow.webContents.openDevTools();
 };
